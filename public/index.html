@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>noVNC Hub - 원격 서버 관리 포털</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <div class="logo-area">
+      <div class="logo-icon">VNC</div>
+      <div class="logo-text">
+        <h1>noVNC Hub</h1>
+        <span>중앙 집중형 원격 서버 관리 포털</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button id="btn-open-settings" class="btn btn-secondary btn-sm" title="보안 및 환경설정">
+        ⚙️ 설정
+      </button>
+      <button id="btn-logout" class="btn btn-secondary btn-sm" style="display: none;" title="로그아웃">
+        로그아웃
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="controls-bar">
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="서버 이름, 호스트, 설명으로 검색...">
+      </div>
+      <div>
+        <button id="btn-open-add-server" class="btn btn-primary">
+          ➕ 새 VNC 서버 추가
+        </button>
+      </div>
+    </div>
+
+    <!-- 서버 카드 그리드 -->
+    <div id="servers-grid" class="servers-grid">
+      <div class="empty-state">
+        <h3>등록된 VNC 서버가 없습니다.</h3>
+        <p>상단의 "새 VNC 서버 추가" 버튼을 눌러 원격 데스크톱을 등록해 보세요.</p>
+        <button class="btn btn-primary" onclick="openAddServerModal()">서버 추가하기</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- 1. 서버 추가 / 수정 모달 -->
+  <div id="modal-server" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-server-title">VNC 서버 추가</h2>
+        <button class="close-btn" onclick="closeModal('modal-server')">&times;</button>
+      </div>
+      <form id="form-server">
+        <input type="hidden" id="server-id">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="server-name">서버 이름 *</label>
+            <input type="text" id="server-name" required placeholder="예: 개발용 Ubuntu 데스크톱">
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="flex: 2;">
+              <label for="server-host">호스트 IP / 도메인 *</label>
+              <input type="text" id="server-host" required placeholder="예: 192.168.1.10">
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <label for="server-port">VNC 포트 *</label>
+              <input type="number" id="server-port" value="5900" required placeholder="5900">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="server-password">VNC 비밀번호 (선택사항)</label>
+            <input type="password" id="server-password" placeholder="비밀번호가 있는 경우 입력">
+            <small id="server-pw-hint" style="display:none; color:var(--text-muted); font-size:0.75rem; margin-top:4px;">
+              * 변경할 때만 새로 입력하세요. (비워두면 기존 비밀번호 유지)
+            </small>
+          </div>
+          <div class="form-group">
+            <label for="server-desc">설명 / 비고</label>
+            <textarea id="server-desc" rows="2" placeholder="용도, 사양, 담당자 등"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-server')">취소</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-server">저장</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. 환경설정 모달 (로그인 설정) -->
+  <div id="modal-settings" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>보안 및 환경설정</h2>
+        <button class="close-btn" onclick="closeModal('modal-settings')">&times;</button>
+      </div>
+      <form id="form-settings">
+        <div class="modal-body">
+          <div class="form-group checkbox-group" style="margin-bottom: 1.5rem;">
+            <input type="checkbox" id="setting-auth-enabled">
+            <label for="setting-auth-enabled" style="margin-bottom: 0; cursor: pointer; color: var(--text-primary); font-weight: 600;">
+              웹 포털 로그인 보호 활성화
+            </label>
+          </div>
+
+          <div id="auth-fields" style="display: none; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+            <div class="form-group" id="group-current-password" style="display: none;">
+              <label for="setting-current-password">현재 마스터 비밀번호</label>
+              <input type="password" id="setting-current-password" placeholder="기존 비밀번호 입력">
+            </div>
+            <div class="form-group">
+              <label for="setting-new-password">새 마스터 비밀번호</label>
+              <input type="password" id="setting-new-password" placeholder="새 비밀번호 입력">
+            </div>
+            <div class="form-group">
+              <label for="setting-confirm-password">새 마스터 비밀번호 확인</label>
+              <input type="password" id="setting-confirm-password" placeholder="새 비밀번호 다시 입력">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-settings')">취소</button>
+          <button type="submit" class="btn btn-primary">설정 저장</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. 로그인 모달 (인증 필요 시 화면 차단) -->
+  <div id="modal-login" class="modal-overlay">
+    <div class="modal-content" style="max-width: 400px;">
+      <div class="modal-header">
+        <h2>noVNC Hub 로그인</h2>
+      </div>
+      <form id="form-login">
+        <div class="modal-body">
+          <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">
+            서버 목록 및 VNC 콘솔에 접근하려면 마스터 비밀번호를 입력해 주세요.
+          </p>
+          <div class="form-group">
+            <label for="login-password">마스터 비밀번호</label>
+            <input type="password" id="login-password" required placeholder="비밀번호 입력" autofocus>
+          </div>
+          <div id="login-error" style="color: var(--danger); font-size: 0.85rem; display: none;"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary" style="width: 100%;">로그인</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

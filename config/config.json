@@ -1,0 +1,17 @@
+{
+  "auth": {
+    "enabled": false,
+    "passwordHash": ""
+  },
+  "servers": [
+    {
+      "id": "srv-muqncfsa-tsz4",
+      "name": "테스트 서버 1",
+      "host": "127.0.0.1",
+      "port": 5900,
+      "password": "",
+      "description": "로컬 VNC",
+      "createdAt": "2026-10-02T07:33:32.266Z"
+    }
+  ]
+}
