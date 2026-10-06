@@ -6,8 +6,8 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./config:/conf.d/novnc
+      - ./config:/conf.d/novnc-hub
     environment:
       - PORT=8080
-      - CONFIG_PATH=/conf.d/novnc/config.json
+      - CONFIG_PATH=/conf.d/novnc-hub/config.json
       - SESSION_SECRET=novnc-custom-secret-change-me

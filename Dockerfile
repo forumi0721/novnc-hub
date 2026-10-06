@@ -14,11 +14,11 @@ COPY src/ ./src/
 COPY public/ ./public/
 
 # 설정 파일 저장 볼륨 디렉터리
-RUN mkdir -p /conf.d/novnc
-VOLUME ["/conf.d/novnc"]
+RUN mkdir -p /conf.d/novnc-hub
+VOLUME ["/conf.d/novnc-hub"]
 
 ENV PORT=8080
-ENV CONFIG_PATH=/conf.d/novnc/config.json
+ENV CONFIG_PATH=/conf.d/novnc-hub/config.json
 ENV NODE_ENV=production
 
 EXPOSE 8080

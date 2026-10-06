@@ -8,7 +8,7 @@
 
 - **UI 기반 서버 관리**: 복잡한 설정 파일 수정 없이 웹 UI에서 VNC 서버를 손쉽게 추가, 수정, 삭제(CRUD)할 수 있습니다.
 - **초경량 단일 컨테이너**: Node.js 기반 단일 프로세스로 [웹 UI + REST API + WebSocket ↔ VNC TCP 프록시]를 올인원으로 처리합니다 (포트 `8080` 하나만 노출).
-- **간편한 설정 영속화**: 외부 DB 없이 `/conf.d/novnc/config.json` 단일 파일로 모든 설정이 저장되어 백업 및 복구가 매우 간편합니다.
+- **간편한 설정 영속화**: 외부 DB 없이 `/conf.d/novnc-hub/config.json` 단일 파일로 모든 설정이 저장되어 백업 및 복구가 매우 간편합니다.
 - **실시간 상태 체크 (Healthcheck)**: 서버 목록에서 각 VNC 서버의 포트 활성화 여부(온라인/오프라인) 및 레이턴시를 자동으로 표시합니다.
 - **noVNC 임베디드 뷰어**:
   - 상단 드롭다운으로 다른 서버 즉시 전환
@@ -34,11 +34,11 @@ docker compose up -d --build
 ## 🐳 Docker CLI 직접 실행
 
 ```bash
-# 로컬의 config 디렉터리를 /conf.d/novnc로 마운트
+# 로컬의 config 디렉터리를 /conf.d/novnc-hub로 마운트
 docker run -d \
   --name novnc-hub \
   -p 8080:8080 \
-  -v $(pwd)/config:/conf.d/novnc \
+  -v $(pwd)/config:/conf.d/novnc-hub \
   --restart unless-stopped \
   novnc-hub
 ```
@@ -57,7 +57,7 @@ CONFIG_PATH="./config/config.json" npm start
 
 ---
 
-## ⚙️ 설정 파일 (`/conf.d/novnc/config.json`)
+## ⚙️ 설정 파일 (`/conf.d/novnc-hub/config.json`)
 
 컨테이너 최초 실행 시 자동으로 기본 설정 파일이 생성됩니다. UI를 통해 수정할 수 있으며, 필요한 경우 텍스트 에디터로 직접 수정할 수도 있습니다.
 
@@ -94,7 +94,7 @@ novnc/
 ├── README.md                    # 사용자 가이드
 ├── src/
 │   ├── server.js                # Express 및 WebSocket 서버 통합 진입점
-│   ├── config.js                # /conf.d/novnc/config.json 파일 I/O 및 CRUD 모듈
+│   ├── config.js                # /conf.d/novnc-hub/config.json 파일 I/O 및 CRUD 모듈
 │   └── routes/
 │       ├── api.js               # 서버 CRUD, 인증, TCP 핑 헬스체크 API
 │       └── proxy.js             # WebSocket <-> VNC TCP 양방향 스트리밍 프록시

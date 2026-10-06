@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-// Docker 기본 경로는 /conf.d/novnc/config.json
+// Docker 기본 경로는 /conf.d/novnc-hub/config.json
 // 환경 변수 CONFIG_PATH가 주어지면 우선 사용
-const DEFAULT_PATH = process.env.CONFIG_PATH || '/conf.d/novnc/config.json';
+const DEFAULT_PATH = process.env.CONFIG_PATH || '/conf.d/novnc-hub/config.json';
 
 function getConfigPath() {
   return DEFAULT_PATH;

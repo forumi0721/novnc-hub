@@ -55,7 +55,7 @@ flowchart TD
 
 ---
 
-## 4. 데이터 저장소 및 스키마 설계 (`/conf.d/novnc/config.json`)
+## 4. 데이터 저장소 및 스키마 설계 (`/conf.d/novnc-hub/config.json`)
 
 별도 DB 없이 마운트된 디렉터리의 단일 JSON 파일로 모든 상태를 관리합니다.
 
@@ -107,7 +107,7 @@ flowchart TD
 - `GET /api/servers/:id/ping`: 대상 VNC 포트 TCP 핑/헬스체크 (온라인/오프라인 상태 표시용)
 
 ### 2) WebSocket 프록시 (`/ws?serverId={id}`)
-- 클라이언트가 WebSocket으로 접속하면 서버는 `/conf.d/novnc/config.json`에서 `serverId`에 해당하는 `host`와 `port`를 조회.
+- 클라이언트가 WebSocket으로 접속하면 서버는 `/conf.d/novnc-hub/config.json`에서 `serverId`에 해당하는 `host`와 `port`를 조회.
 - Node.js `net.createConnection({ host, port })`를 생성하여 WebSocket과 TCP 소켓 간 바이너리 데이터 상호 릴레이.
 - 만약 서버에 VNC 패스워드가 등록되어 있다면, noVNC 클라이언트가 접속 시 자동으로 인증 파라미터를 넘길 수 있도록 지원(또는 수동 입력).
 
@@ -145,7 +145,7 @@ novnc/
 ├── DESIGN.md
 ├── src/
 │   ├── server.js          # Express + WebSocket + TCP 프록시
-│   ├── config.js          # JSON 파일 I/O 관리 (/conf.d/novnc/config.json)
+│   ├── config.js          # JSON 파일 I/O 관리 (/conf.d/novnc-hub/config.json)
 │   └── routes/
 │       ├── api.js         # REST API 엔드포인트
 │       └── proxy.js       # WebSocket-TCP 브릿지
@@ -164,7 +164,7 @@ novnc/
 docker run -d \
   --name novnc-hub \
   -p 8080:8080 \
-  -v $(pwd)/config:/conf.d/novnc \
+  -v $(pwd)/config:/conf.d/novnc-hub \
   --restart unless-stopped \
   novnc-hub
 ```
